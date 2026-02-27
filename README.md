@@ -12,9 +12,9 @@ Scalable backend architecture
 
 Secure API design
 
-Basic frontend integration
+Basic frontend integration (i use tanstack for optimistic updates and background caching)
 
-NOTE: I only use AI to polish the frontend UI for both dashboard  and to create this README.md file to demonstrate the functionality of this be focused project well. 
+NOTE: I only use AI to polish the frontend UI for both dashboard  and to create this README.md file to demonstrate the functionality of this backend focused project well. 
 
 🌐 Live Demo
 
