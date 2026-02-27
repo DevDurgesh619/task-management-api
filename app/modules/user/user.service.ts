@@ -1,6 +1,5 @@
 import { AppError } from "@/app/utils/errors"
-import { userRepository } from "../modules/user/user.repository"
-
+import { userRepository } from "./user.repository"
 export const userService ={
     async getUsers (){
         const Users = await userRepository.getAllUsers()

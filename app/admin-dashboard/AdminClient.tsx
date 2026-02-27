@@ -3,19 +3,20 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Modal } from "./Modal"
+import { apiFetch } from "@/lib/fetchWrapper"
 
 export function AdminClient(){
     const [selectedUser,setSelectedUser]=useState("")
     const [modalOpen,setModalOpen] = useState(false)
     const getUsers = async ()=>{
-        const res = await fetch("/api/users",{
+        const res = await apiFetch("/api/v1/users",{
             method:"GET",
             headers:{"Content-Type":"application/json"}
         })
-        if(!res.ok){
+        if(!res!.ok){
             throw new Error("NOT getting users list")
         }
-        return await res.json()
+        return await res!.json()
     }
     const usersQuery = useQuery({
         queryKey:["users"],

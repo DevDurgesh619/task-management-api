@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
-import { AppError } from "../app/utils/errors"
 import { ZodError } from "zod";
 import { Prisma } from "@prisma/client";
+import { AppError } from "./errors";
 
 export function withErrorHndler(
     handler: Function

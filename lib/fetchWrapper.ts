@@ -5,7 +5,7 @@ export async function apiFetch(url: string, options?: RequestInit) {
   });
 
   if (res.status === 401) {
-    const refreshRes = await fetch("/api/auth/refresh", {
+    const refreshRes = await fetch("/api/v1/auth/refresh", {
       method: "POST",
       credentials: "include"
     });

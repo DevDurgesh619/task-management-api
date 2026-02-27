@@ -1,6 +1,6 @@
 import { Status } from "@prisma/client"
-import { todoRepository } from "../modules/todos/todo.repository"
 import { AppError } from "@/app/utils/errors"
+import { todoRepository } from "./todo.repository"
 
 export const useTodoService = {
     async createTodo(data:any,userId:any){
@@ -26,5 +26,13 @@ export const useTodoService = {
             throw new AppError("Error in getting todos from DB",404,"GET_TODO_PRISMA_ERROR")
         }
         return todos
+    },
+    async deleteTodo(todoId:string){
+        console.log("todoId in service",todoId)
+        const dltTodo = await todoRepository.deleteTODO(todoId)
+        if(!dltTodo){
+            throw new AppError("Failed to delete todo",500,"FAILED_TO_DELETE_TODO")
+        }
+        return dltTodo
     }
 }

@@ -5,14 +5,14 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Allow auth routes
-  if (pathname.startsWith("/api/auth")) {
+  if (pathname.startsWith("/api/v1/auth")) {
     return NextResponse.next();
   }
 
   const accessToken = req.cookies.get("accessToken")?.value;
 
   if (!accessToken) {
-    if (pathname.startsWith("/api")) {
+    if (pathname.startsWith("/api/v1")) {
        console.log("middleware sending 401 ")
       return new NextResponse("Unauthorized", { status: 401 });
     }
@@ -27,6 +27,6 @@ export const config = {
   matcher: [
     "/user-dashboard/:path*",
     "/admin-dashboard/:path*",
-    "/api/:path*"
+    "/api/v1/:path*"
   ],
 };

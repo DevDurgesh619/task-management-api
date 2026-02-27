@@ -1,22 +1,12 @@
-import { useTodoService } from "@/app/services/todo.service";
-import { todoSchema } from "@/app/modules/auth/auth.validator";
 import { sendResponse } from "@/app/utils/apiRespond";
 import prisma from "@/lib/prisma";
 import { requireAuth } from "@/lib/requireAuth";
-import { withErrorHndler } from "@/lib/withErrorHandler";
 import { Role } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { withErrorHndler } from "@/app/utils/withErrorHandler";
+import { useTodoService } from "@/app/modules/todos/todo.service";
+import { todoSchema } from "@/app/modules/todos/todo.validator";
 
-export async function GET(req:NextRequest){
-    
-       const user = await requireAuth( [Role.USER, Role.ADMIN]);
-        const result = useTodoService.getTodos(user.userId)
-        return sendResponse(
-            {todos:result},
-            "Get all todo Succesfully",
-            200
-        )
-}
 export const POST = withErrorHndler( async (req:NextRequest) =>{
     const user = await requireAuth( [Role.USER, Role.ADMIN]);
     const data = await req.json();

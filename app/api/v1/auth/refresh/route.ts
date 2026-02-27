@@ -18,7 +18,7 @@ export const POST = withErrorHndler(async ()=>{
             secure: true,
             sameSite: "strict",
             path: "/",
-            maxAge: 60 * 1 // 15 min
+            maxAge: 60 * 10 // 15 min
           });
 
     return sendResponse(

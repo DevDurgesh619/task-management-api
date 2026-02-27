@@ -17,5 +17,13 @@ export const todoRepository = {
                 userId
             },
         })
+    },
+    async deleteTODO(todoId:string){
+        console.log("todoID reache to db call",todoId)
+        return await prisma.task.delete({
+            where:{
+                id:todoId
+            }
+        })
     }
 }

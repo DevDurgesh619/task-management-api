@@ -21,9 +21,27 @@ export default function UserClient(){
             description:"",
             status:""
         })
+         const queryClient = useQueryClient()
+        const handleDelete = async (todoId: string) => {
+        try {
+            const res = await apiFetch(`/api/v1/todos/${todoId}`, {
+            method: "DELETE",
+            });
+
+            if (!res!.ok) {
+            throw new Error("Failed to delete");
+            }
+
+            console.log("Deleted successfully");
+            queryClient.invalidateQueries({queryKey:["todos"]})
+        } catch (error) {
+            console.error(error);
+        }
+        };
+
         const getTodos = async ()=>{
             try{
-                const res = await apiFetch("/api/todos",{
+                const res = await apiFetch("/api/v1/todos",{
                     method:"GET",
                     headers:{"Content-Type":"application/json"},
                 })
@@ -37,11 +55,10 @@ export default function UserClient(){
             queryKey:["todos"],
             queryFn:getTodos
         })
-        const queryClient = useQueryClient()
 
         const mutation = useMutation({
             mutationFn: async () => {
-                const res = await apiFetch("/api/todos", {
+                const res = await apiFetch("/api/v1/todos", {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify(form),
@@ -112,12 +129,15 @@ export default function UserClient(){
                     Add To-Do
                 </button>
             </div>
-            <div>
-                {data?.todos?.map((todo:any,i:any)=> <div key={todo.id} className=" flex gap-2">
+            <div className=" space-y-2">
+                {data?.data.todos?.map((todo:any,i:any)=> <div key={todo.id} className=" flex gap-2">
                     <h2>{i} |</h2>
                     <h2>{todo.title} |</h2>
                     <h2>{todo.description} |</h2>
                     <h2>{todo.status}</h2>
+                    <button className="bg-black text-white rounded hover:bg-gray-500 " onClick={() => handleDelete(todo.id)}>
+                    Delete
+                    </button>
                 </div>)}
             </div>
         </div>

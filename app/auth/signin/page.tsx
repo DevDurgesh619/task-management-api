@@ -17,7 +17,7 @@ export default function Signin(){
     })
     async function handleClick(){
         try{
-            const res = await fetch("/api/auth/signin",{
+            const res = await fetch("/api/v1/auth/signin",{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({
