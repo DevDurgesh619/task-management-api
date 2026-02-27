@@ -1,5 +1,5 @@
 "use client"
-import { Role } from "@prisma/client"
+
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -13,13 +13,9 @@ export default function Signup(){
     const [name,setName] = useState("")
     const [email, setEmail] = useState("")
     const [password,setPassword]  = useState("")
-    const [secretKey,setSecretKey] = useState("")
-    const [error,setError] = useState <FormErrors>({
-        email:"",
-        name:"",
-        password:"",
-    })
+    const [error,setError] = useState<FormErrors>({})
     const router = useRouter()
+
     async function handleClick(){
         try{
             const res = await fetch("/api/v1/auth/signup",{
@@ -28,71 +24,105 @@ export default function Signup(){
                 body:JSON.stringify({
                     email,
                     name,
-                    password,
-                    secretKey
+                    password
                 })
             })
+
             const data = await res.json()
+
             if (!data.success && data.errors?.fieldErrors) {
-            const fieldErrors = data.errors.fieldErrors;
+                const fieldErrors = data.errors.fieldErrors
+                const formattedErrors: FormErrors = {};
 
-            const formattedErrors: FormErrors = {};
+                (Object.keys(fieldErrors) as (keyof FormErrors)[]).forEach((key) => {
+                    if (fieldErrors[key]?.[0]) {
+                        formattedErrors[key] = fieldErrors[key][0]
+                    }
+                })
 
-            (Object.keys(fieldErrors) as (keyof FormErrors)[]).forEach((key) => {
-                if (fieldErrors[key]?.[0]) {
-                formattedErrors[key] = fieldErrors[key]![0];
-                }
-            });
-
-            setError(formattedErrors);
+                setError(formattedErrors)
+                return
             }
 
-            console.log(error)
             if(data.success){
                 router.push("/auth/signin")
             }
+
         }catch(e){
-            console.error("This is the error from signup comp, ",e)
+            console.error("Signup error:", e)
         }
     }
+
     return (
-        <div className=" bg-gray-100 h-auto w-auto p-5">
-            <div>
-            <h2>Name</h2>
-            <input className="h-auto w-24 border" 
-                value={name}
-                onChange={(e)=> {
-                    setName(e.target.value)
-                    setError((prev) => ({ ...prev, name: undefined }))}}>
-            </input>
-            {error && <div> name Error: <span className="text-red-400 font-bold text-sm">{error.name}</span></div>}
-             <h2>Email</h2>
-            <input className="h-auto w-24 border" 
-                value={email}
-                onChange={(e)=> {
-                    setEmail(e.target.value)
-                    setError((prev) => ({ ...prev, email: undefined }))}}>
-            </input>
-            {error && <div> Email Error: <span className="text-red-400 font-bold text-sm">{error.email}</span></div>}
-             <h2>Password</h2>
-            <input className="h-auto w-24 border" 
-                value={password}
-                onChange={(e)=> {
-                    setPassword(e.target.value)
-                    setError((prev) => ({ ...prev, password: undefined }))}}>
-            </input>
-            {error && <div> password Error: <span className="text-red-400 font-bold text-sm">{error.password}</span></div>}
-             <h2>AdminSecret</h2>
-            <input className="h-auto w-24 border" 
-                value={secretKey}
-                onChange={(e)=> setSecretKey(e.target.value)}>
-            </input>
-             </div>
-            <button className="bg-black text-white rounded hover:bg-gray-600 h-auto w-auto"
-            onClick={()=>handleClick()}>
-                Signin
-            </button>
-            
+        <div className="bg-gray-100 min-h-screen flex items-center justify-center">
+            <div className="bg-white p-6 rounded shadow-md w-80">
+                
+                <h1 className="text-xl font-bold mb-4 text-center">Create Account</h1>
+
+                <div className="mb-3">
+                    <label>Name</label>
+                    <input
+                        className="w-full border p-2 rounded"
+                        value={name}
+                        onChange={(e)=> {
+                            setName(e.target.value)
+                            setError((prev) => ({ ...prev, name: undefined }))
+                        }}
+                    />
+                    {error.name && (
+                        <p className="text-red-500 text-sm">{error.name}</p>
+                    )}
+                </div>
+
+                <div className="mb-3">
+                    <label>Email</label>
+                    <input
+                        className="w-full border p-2 rounded"
+                        value={email}
+                        onChange={(e)=> {
+                            setEmail(e.target.value)
+                            setError((prev) => ({ ...prev, email: undefined }))
+                        }}
+                    />
+                    {error.email && (
+                        <p className="text-red-500 text-sm">{error.email}</p>
+                    )}
+                </div>
+
+                <div className="mb-4">
+                    <label>Password</label>
+                    <input
+                        type="password"
+                        className="w-full border p-2 rounded"
+                        value={password}
+                        onChange={(e)=> {
+                            setPassword(e.target.value)
+                            setError((prev) => ({ ...prev, password: undefined }))
+                        }}
+                    />
+                    {error.password && (
+                        <p className="text-red-500 text-sm">{error.password}</p>
+                    )}
+                </div>
+
+                <button
+                    className="w-full bg-black text-white py-2 rounded hover:bg-gray-700"
+                    onClick={handleClick}
+                >
+                    Sign Up
+                </button>
+
+                <p className="text-sm text-center mt-4">
+                    Already have an account?{" "}
+                    <span
+                        onClick={() => router.push("/auth/signin")}
+                        className="text-blue-600 cursor-pointer hover:underline"
+                    >
+                        Sign in
+                    </span>
+                </p>
+
+            </div>
         </div>
     )
 }

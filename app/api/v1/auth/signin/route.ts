@@ -1,16 +1,12 @@
+
 import { authService } from "@/app/modules/auth/auth.service";
 import { signinSchema } from "@/app/modules/auth/auth.validator";
 import { sendResponse } from "@/app/utils/apiRespond";
-import { AppError } from "@/app/utils/errors";
 import { withErrorHndler } from "@/app/utils/withErrorHandler";
 import { getClientIP } from "@/lib/getClientIp";
-import prisma from "@/lib/prisma";
 import { rateLimit } from "@/lib/rateLimiter";
-import { Role } from "@prisma/client";
-import bcrypt from "bcryptjs";
-import { SignJWT } from "jose";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export const  POST = withErrorHndler(async (req:NextRequest) => {
         const data = await req.json()

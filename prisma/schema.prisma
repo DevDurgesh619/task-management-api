@@ -39,7 +39,7 @@ model Task {
   createdAt   DateTime  @default(now())
   status      Status    @default(PENDING)
   userId     String
-  user      User        @relation(fields: [userId],references: [id])
+  user      User        @relation(fields: [userId],references: [id],onDelete: Cascade)
 }
 model RefreshToken {
   id          String    @default(cuid())  @id
@@ -48,5 +48,5 @@ model RefreshToken {
   createdAt    DateTime   @default(now())
   revoked      Boolean     @default(false)
   userId      String
-  user        User      @relation(fields: [userId],references: [id])
+  user        User      @relation(fields: [userId],references: [id],onDelete: Cascade)
 }

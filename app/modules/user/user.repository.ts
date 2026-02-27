@@ -31,4 +31,9 @@ export const userRepository = {
             where:{id:userId}
         })
     },
+    DleletUser(userId:string){
+        return prisma.user.delete({
+        where: { id: userId },
+    })
+    }
 }

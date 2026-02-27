@@ -1,8 +1,7 @@
 import { sendResponse } from "@/app/utils/apiRespond";
 import { withErrorHndler } from "@/app/utils/withErrorHandler";
-import { NextResponse } from "next/server";
 
-export  const  logout = withErrorHndler( async()=> {
+export  const  POST = withErrorHndler( async(req:Request)=> {
 const response = sendResponse(
     null,
     "Logged out successfully",

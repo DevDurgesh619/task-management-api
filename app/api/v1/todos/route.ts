@@ -7,6 +7,16 @@ import { withErrorHndler } from "@/app/utils/withErrorHandler";
 import { useTodoService } from "@/app/modules/todos/todo.service";
 import { todoSchema } from "@/app/modules/todos/todo.validator";
 
+export const GET = withErrorHndler( async (req:NextRequest) => {
+    
+       const user = await requireAuth( [Role.USER, Role.ADMIN]);
+        const result = await useTodoService.getTodos(user.userId)
+        return sendResponse(
+            {todos:result},
+            "Get all todo Succesfully",
+            200
+        )
+})
 export const POST = withErrorHndler( async (req:NextRequest) =>{
     const user = await requireAuth( [Role.USER, Role.ADMIN]);
     const data = await req.json();

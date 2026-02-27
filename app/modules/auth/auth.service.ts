@@ -41,9 +41,9 @@ async signInRegister (data:any){
             if(!isPasswordValid){
                 throw new AppError("Invalid credentials", 401, "INVALID_CREDENTIALS");
             }
-            async function createToken(email:any,role:any) {
+            async function createToken(email:any,role:any,name:any) {
             const jwt = await new SignJWT({
-                email,role,sub:exestingUser?.id
+                email,role,sub:exestingUser?.id,Name:name
             })
                 .setProtectedHeader({ alg: 'HS256' })
                 .setIssuedAt()
@@ -52,9 +52,9 @@ async signInRegister (data:any){
             
             return jwt;
             }
-            const accessToken = await createToken(data.email,exestingUser.role);
+            const accessToken = await createToken(data.email,exestingUser.role,exestingUser.name);
             const refreshToken = crypto.randomUUID()
-           const createRefreshToken = await authRepository.create_RefreshToken(refreshToken,exestingUser.id);
+           await authRepository.create_RefreshToken(refreshToken,exestingUser.id);
             return {
                 user:{
                     id:exestingUser.id,
@@ -75,9 +75,9 @@ async refresh(refreshToken: string){
     const newRefreshToken = crypto.randomUUID()
     const saveNewToken = await authRepository.create_RefreshToken(newRefreshToken,existing.userId)
     const exestingUser = await userRepository.findById(existing.userId)
-    async function createToken(email:any,role:any) {
+    async function createToken(email:any,role:any,name:any) {
             const jwt = await new SignJWT({
-                email,role,sub:exestingUser?.id
+                email,role,sub:exestingUser?.id,Name:name
             })
                 .setProtectedHeader({ alg: 'HS256' })
                 .setIssuedAt()
@@ -86,7 +86,7 @@ async refresh(refreshToken: string){
             
             return jwt;
             }
-    const accessToken = await createToken(exestingUser?.email,exestingUser?.role);
+    const accessToken = await createToken(exestingUser?.email,exestingUser?.role,exestingUser?.name);
     return {
         accessToken,
         newRefreshToken

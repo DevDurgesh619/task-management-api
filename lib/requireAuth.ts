@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 type AuthUser = {
   userId: string;
   role: Role;
+  name:string
 };
 
 export async function requireAuth(
@@ -24,6 +25,7 @@ export async function requireAuth(
   const user = {
     userId: payload.sub as string,
     role: payload.role as Role,
+    name: payload.Name as string
   };
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {

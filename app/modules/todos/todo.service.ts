@@ -1,6 +1,8 @@
 import { Status } from "@prisma/client"
 import { AppError } from "@/app/utils/errors"
 import { todoRepository } from "./todo.repository"
+import { sendResponse } from "@/app/utils/apiRespond"
+import prisma from "@/lib/prisma"
 
 export const useTodoService = {
     async createTodo(data:any,userId:any){
@@ -34,5 +36,16 @@ export const useTodoService = {
             throw new AppError("Failed to delete todo",500,"FAILED_TO_DELETE_TODO")
         }
         return dltTodo
+    },
+   async updateTodo(data: any, userId: string, todoId: string) {
+    const existingTodo = await todoRepository.findTodo(userId,todoId)
+
+    if (!existingTodo) {
+        throw new Error("Todo not found");
+    }
+
+    const updated = await todoRepository.updateTodo(data,todoId)
+
+    return updated;
     }
 }

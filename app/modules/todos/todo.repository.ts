@@ -25,5 +25,23 @@ export const todoRepository = {
                 id:todoId
             }
         })
+    },
+    async findTodo(userId:string,todoId:string){
+        return await prisma.task.findFirst({
+        where: {
+        id:todoId,
+        userId,
+        },
+    });
+    },
+    async updateTodo(data:any,todoId:string){
+        console.log("todoId in put db call",todoId)
+        return await prisma.task.update({
+        where: {
+        id: todoId,
+        },
+        data,
+    });
+
     }
 }

@@ -1,55 +1,64 @@
 "use client"
 
+import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/lib/fetchWrapper"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
 
-export function Modal({onClose,selectedUser}:{onClose:any,selectedUser:any}){
-     const getTodos = async ()=>{
-            try{
-                const res = await apiFetch(`/api/v1/users/${selectedUser}`,{
-                    method:"GET",
-                    headers:{"Content-Type":"application/json"},
-                })
-                if(!res!.ok){
-                    throw new Error("Error in getting todos data from be")
-                }
-               return await res!.json()
-            }catch(e){
-                console.error("This is the error :",e)
-            }
-        }
-        const {data,error,isLoading} = useQuery({
-            queryKey:["todos",selectedUser],
-            queryFn:getTodos
-        })
-        const queryClient = useQueryClient()
-        queryClient.invalidateQueries({queryKey:["todos"]})
-         if(isLoading){
-            return(
-                <div>
-                    Loading....
-                </div>
-            )
-         }
-         if(error){
-            return <div> there is error in getting data</div>
-         }
-         console.log("todos",data.data)
-    return(
-        <div className="flex justify-center items-center  min-h-screen">
+export function Modal({
+  onClose,
+  selectedUser,
+}: {
+  onClose: () => void
+  selectedUser: string
+}) {
+  const getTodos = async () => {
+    const res = await apiFetch(`/api/v1/users/${selectedUser}`)
+    if (!res?.ok) throw new Error("Failed to fetch todos")
+    return res.json()
+  }
 
-        <div className="flex flex-col justify-center items-start p-5 h-64 w-96 bg-gray-100">
-                {data?.data.todos.map((todo:any,i:any)=>
-                <div key={todo.id} className=" flex justify-end gap-2">
-                    <h2>{i} |</h2>
-                    <h2>{todo.title} |</h2>
-                    <h2>{todo.description} |</h2>
-                    <h2>{todo.status}</h2>
-                </div>)}
-                 <div>
-                    <button className="bg-black text-white" onClick={onClose}>Close</button>
-                </div>
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["todos", selectedUser],
+    queryFn: getTodos,
+  })
+
+  return (
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
+      <div className="bg-white w-[500px] max-h-[80vh] rounded-2xl shadow-xl p-6 overflow-y-auto animate-fadeIn">
+        <h2 className="text-xl font-semibold mb-4">User Todos</h2>
+
+        {isLoading && <p className="text-gray-500">Loading...</p>}
+        {error && <p className="text-red-500">Error loading todos</p>}
+
+        <div className="space-y-3">
+          {data?.data.todos.map((todo: any, index: number) => (
+            <div
+              key={todo.id}
+              className="bg-gray-50 p-4 rounded-lg border"
+            >
+              <div className="flex justify-between">
+                <span className="font-medium">
+                  {index + 1}. {todo.title}
+                </span>
+                <span className="text-sm text-gray-500">
+                  {todo.status}
+                </span>
+              </div>
+              <p className="text-gray-600 text-sm mt-1">
+                {todo.description}
+              </p>
+            </div>
+          ))}
         </div>
+
+        <div className="mt-6 text-right">
+          <button
+            onClick={onClose}
+            className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-black transition"
+          >
+            Close
+          </button>
         </div>
-    )
+      </div>
+    </div>
+  )
 }
