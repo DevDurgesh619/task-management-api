@@ -11,6 +11,7 @@ export const GET = withErrorHndler( async (
   { params }: { params: { userId: string } }
 ) => {
        const user = await requireAuth( [Role.USER, Role.ADMIN]);
+
        const { userId } =  await params;
         const result = await useTodoService.getTodos(userId)
         return sendResponse(
@@ -23,9 +24,10 @@ export const  DELETE = withErrorHndler( async (
   req: NextRequest,
   { params }: { params: { userId: string } }
 )=>{
+  const user = await requireAuth( [Role.USER, Role.ADMIN]);
   const { userId } = await params
   console.log("userId in delete controller",userId)
-  const deletUser = await userService.deleteUser(userId)
+  const deletUser = await userService.deleteUser(userId,user.role)
 
   return sendResponse(deletUser, "User deleted successfully", 200)
 })
