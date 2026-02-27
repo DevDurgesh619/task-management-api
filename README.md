@@ -1,36 +1,259 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Task Management API (Backend + Basic Frontend)
 
-## Getting Started
+A secure, scalable full-stack task management system built as part of a Backend Developer Internship assignment.
 
-First, run the development server:
+This project demonstrates:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Authentication (JWT + Refresh Tokens)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Role-Based Access (User vs Admin)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Scalable backend architecture
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Secure API design
 
-## Learn More
+Basic frontend integration
 
-To learn more about Next.js, take a look at the following resources:
+NOTE: I only use AI to polish the frontend UI for both dashboard  and to create this README.md file to demonstrate the functionality of this be focused project well. 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+🌐 Live Demo
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+👉 https://task-management-api-git-main-devdurgesh619s-projects.vercel.app/
 
-## Deploy on Vercel
+📌 Features
+🔐 Authentication & Security
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+User Signup & Signin
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Password hashing (secure storage)
+
+JWT-based authentication:
+
+Access Token (10 min expiry)
+
+Refresh Token (7 days expiry)
+
+Tokens stored in HTTP-only cookies
+
+Protection against:
+
+XSS (httpOnly cookies)
+
+CSRF (secure cookie settings)
+
+Rate limiting:
+
+Max 5 requests/min for auth routes
+
+👥 Role-Based Access Control
+
+Two roles:
+
+User
+
+Admin
+
+Authorization handled via middleware
+
+Example:
+
+Only admin can delete users
+
+Unauthorized access → 403 Forbidden
+
+📝 Todo Management (CRUD)
+
+User can:
+
+Create Todo
+
+Get all Todos
+
+Update Todo
+
+Delete Todo
+
+Admin can:
+
+View all users
+
+Delete users
+
+🧠 Backend Architecture
+
+Follows a clean, scalable structure:
+
+Controller → Service → Repository → Database
+
+Controller → handles request/response
+
+Service → business logic
+
+Repository → DB queries (Prisma)
+
+🛡️ Validation & Error Handling
+
+Input validation using Zod
+
+Prevents invalid/malicious data
+
+Structured error system:
+
+AppError class
+
+Global error handler
+
+Consistent API response format
+
+📦 API Design
+
+RESTful principles followed
+
+Proper HTTP status codes
+
+Versioned APIs (/api/v1)
+
+Modular structure for scalability
+
+💻 Frontend (Basic UI)
+
+Built with Next.js
+
+Features:
+
+Signup / Signin
+
+Protected dashboard
+
+Todo CRUD operations
+
+Error/success messages display
+
+🔑 Admin Credentials (For Testing)
+Email: admin@gmail.com
+Password: admin123
+
+⚠️ Note:
+If time permitted, admin creation would include email/OTP verification.
+For now, use the above credentials to test admin features.
+
+📮 API Documentation
+
+Postman Collection included (recommended for testing APIs).
+
+▶️ How to Test APIs (Step-by-Step in Postman)
+1. Sign Up (User)
+
+Method: POST
+
+Endpoint: /api/v1/auth/signup
+
+Body (JSON):
+
+{
+  "email": "test@gmail.com",
+  "password": "123456"
+}
+2. Sign In
+
+Method: POST
+
+Endpoint: /api/v1/auth/signin
+
+✅ This will:
+
+Set access token + refresh token in cookies
+
+3. Access Protected Routes
+
+Now you can call:
+
+👉 Get Todos
+
+GET /api/v1/todos
+
+👉 Create Todo
+
+POST /api/v1/todos
+
+👉 Update Todo
+
+PUT /api/v1/todos/:id
+
+👉 Delete Todo
+
+DELETE /api/v1/todos/:id
+
+4. Refresh Token
+
+POST /api/v1/auth/refresh
+
+➡️ Generates new access token when expired
+
+5. Admin Testing
+
+Login using admin credentials, then:
+
+👉 Get All Users
+
+GET /api/v1/users
+
+👉 Delete User
+
+DELETE /api/v1/users/:id
+
+⚙️ Security Highlights
+
+JWT stored in httpOnly cookies
+
+Short-lived access tokens
+
+Refresh token rotation
+
+Zod validation (prevents bad input)
+
+Rate limiting (anti-spam)
+
+Role-based authorization
+
+🧱 Tech Stack
+
+Backend: Node.js, Next.js API routes
+
+Database: Prisma ORM
+
+Auth: JWT (jose)
+
+Validation: Zod
+
+Frontend: Next.js
+
+Deployment: Vercel
+
+📈 Scalability Notes
+
+This project is designed to scale:
+
+Modular architecture (easy to split into microservices)
+
+Repository pattern for DB abstraction
+
+Can add:
+
+Redis caching
+
+Message queues
+
+Load balancing
+
+Docker containerization
+
+📂 Project Structure (Simplified)
+app/
+ ├── modules/
+ │    ├── auth/
+ │    ├── todos/
+ │    ├── users/
+ ├── utils/
+ ├── lib/
+ ├── middleware.ts
