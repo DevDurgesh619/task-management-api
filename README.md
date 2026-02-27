@@ -1,228 +1,210 @@
-Task Management API (Backend + Basic Frontend)
+Task Management System — Secure Scalable Backend with Role-Based Access
 
-A secure, scalable full-stack task management system built as part of a Backend Developer Internship assignment.
+This project is a full-stack task management system designed to demonstrate real-world backend engineering practices including authentication, authorization, API design, and scalability considerations.
 
-This project demonstrates:
-
-Authentication (JWT + Refresh Tokens)
-
-Role-Based Access (User vs Admin)
-
-Scalable backend architecture
-
-Secure API design
+The system is built with a strong focus on security, modular architecture, and clean separation of concerns, while also providing a minimal frontend interface to interact with the APIs.
 
 Basic frontend integration (i use tanstack for optimistic updates and background caching)
 
 NOTE: I only use AI to polish the frontend UI for both dashboard  and to create this README.md file to demonstrate the functionality of this backend focused project well. 
 
-🌐 Live Demo
 
+🌐 Live Application
+
+Access the deployed application here:
 👉 https://task-management-api-git-main-devdurgesh619s-projects.vercel.app/
 
-📌 Features
-🔐 Authentication & Security
+🧠 Project Overview
 
-User Signup & Signin
+The application allows users to manage tasks through a secure API layer while enforcing role-based access control. Two roles are supported:
 
-Password hashing (secure storage)
+User → Can manage their own todos (CRUD operations)
 
-JWT-based authentication:
+Admin → Has elevated privileges including viewing all users and deleting them
 
-Access Token (10 min expiry)
+The system is designed in a way that mirrors production backend systems, with proper layering, validation, and security mechanisms in place.
 
-Refresh Token (7 days expiry)
+🔐 Authentication & Authorization Design
 
-Tokens stored in HTTP-only cookies
+Authentication is implemented using JWT (JSON Web Tokens) with a dual-token strategy:
 
-Protection against:
+Access Token (short-lived, 10 minutes) → Used for API access
 
-XSS (httpOnly cookies)
+Refresh Token (long-lived, 7 days) → Used to regenerate access tokens
 
-CSRF (secure cookie settings)
+Both tokens are securely stored in HTTP-only cookies, mitigating XSS risks. Additional cookie configurations (secure, same-site) are applied to reduce CSRF attack vectors.
 
-Rate limiting:
+During token generation, essential user information such as:
 
-Max 5 requests/min for auth routes
+userId
 
-👥 Role-Based Access Control
+email
 
-Two roles:
+role
 
-User
+is embedded in the payload, enabling efficient authorization checks without repeated database queries.
 
-Admin
+🛡️ Route Protection & Middleware
 
-Authorization handled via middleware
+A centralized authentication flow is enforced using:
 
-Example:
+Middleware layer → Ensures every protected request contains a valid access token
 
-Only admin can delete users
+requireAuth utility → Verifies and decodes JWT, returning authenticated user data
 
-Unauthorized access → 403 Forbidden
+This decoded user object is then used to enforce role-based restrictions, ensuring that:
 
-📝 Todo Management (CRUD)
+Only admins can access sensitive operations (e.g., deleting users)
 
-User can:
+Unauthorized attempts are blocked with proper HTTP responses (403 Forbidden)
 
-Create Todo
+🧱 Backend Architecture
 
-Get all Todos
-
-Update Todo
-
-Delete Todo
-
-Admin can:
-
-View all users
-
-Delete users
-
-🧠 Backend Architecture
-
-Follows a clean, scalable structure:
+The backend follows a modular and scalable architecture pattern:
 
 Controller → Service → Repository → Database
 
-Controller → handles request/response
+Controller Layer handles HTTP requests and responses
 
-Service → business logic
+Service Layer contains business logic
 
-Repository → DB queries (Prisma)
+Repository Layer interacts with the database (via Prisma)
 
-🛡️ Validation & Error Handling
+This separation ensures:
 
-Input validation using Zod
+Better maintainability
 
-Prevents invalid/malicious data
+Easier scalability
 
-Structured error system:
+Clean debugging and testing
 
-AppError class
+🧪 Validation & Error Handling
 
-Global error handler
+To ensure robustness and security:
 
-Consistent API response format
+Zod is used for request validation and input sanitization
 
-📦 API Design
+Invalid or malicious data is rejected before reaching the database
 
-RESTful principles followed
+Validation errors are also propagated to the frontend for better UX
 
-Proper HTTP status codes
+A centralized error handling system is implemented using:
 
-Versioned APIs (/api/v1)
+A custom AppError class
 
-Modular structure for scalability
+A global error handler
 
-💻 Frontend (Basic UI)
+A consistent API response format
 
-Built with Next.js
+This results in predictable and clean error management across the application.
 
-Features:
+⚡ Rate Limiting & Abuse Prevention
 
-Signup / Signin
+To prevent abuse and spamming:
 
-Protected dashboard
+Authentication endpoints (signup/signin) are protected using rate limiting
 
-Todo CRUD operations
+Each user is restricted to 5 requests per minute
 
-Error/success messages display
+This adds a basic but effective layer of protection against brute-force attacks.
 
-🔑 Admin Credentials (For Testing)
-Email: admin@gmail.com
-Password: admin123
+📝 Core Functionality
+User Capabilities
 
-⚠️ Note:
-If time permitted, admin creation would include email/OTP verification.
-For now, use the above credentials to test admin features.
+Register and login securely
 
-📮 API Documentation
+Create, update, delete, and fetch personal todos
 
-Postman Collection included (recommended for testing APIs).
+Access protected dashboard
 
-▶️ How to Test APIs (Step-by-Step in Postman)
-1. Sign Up (User)
+Admin Capabilities
 
-Method: POST
+View all registered users
 
-Endpoint: /api/v1/auth/signup
+Delete users from the system
 
-Body (JSON):
+💻 Frontend Integration
 
-{
-  "email": "test@gmail.com",
-  "password": "123456"
-}
-2. Sign In
+A lightweight frontend is built using Next.js to demonstrate API usability.
 
-Method: POST
+It includes:
 
-Endpoint: /api/v1/auth/signin
+Authentication flows (signup/signin)
 
-✅ This will:
+Protected dashboard access
 
-Set access token + refresh token in cookies
+Todo CRUD interactions
 
-3. Access Protected Routes
+Real-time error/success feedback from API responses
 
-Now you can call:
+The frontend acts as a simple client to validate backend behavior rather than a full production UI.
 
-👉 Get Todos
+📮 API Usage (Postman Guide)
+
+To test APIs using Postman:
+
+Step 1: Register or Login
+
+Send a request to:
+
+POST /api/v1/auth/signup
+POST /api/v1/auth/signin
+
+Upon successful login:
+
+Access & refresh tokens are automatically set in cookies
+
+Step 2: Access Protected Routes
+
+Once authenticated, you can call:
 
 GET /api/v1/todos
 
-👉 Create Todo
-
 POST /api/v1/todos
-
-👉 Update Todo
 
 PUT /api/v1/todos/:id
 
-👉 Delete Todo
-
 DELETE /api/v1/todos/:id
 
-4. Refresh Token
+Step 3: Refresh Token
+
+If access token expires:
 
 POST /api/v1/auth/refresh
+Step 4: Admin Testing
 
-➡️ Generates new access token when expired
+Use the following credentials:
 
-5. Admin Testing
+Email: admin@gmail.com
+Password: admin123
 
-Login using admin credentials, then:
-
-👉 Get All Users
+Admin-only endpoints:
 
 GET /api/v1/users
 
-👉 Delete User
-
 DELETE /api/v1/users/:id
 
-⚙️ Security Highlights
+🔒 Security Considerations
 
-JWT stored in httpOnly cookies
+This project incorporates several important security practices:
+
+HTTP-only cookie storage for tokens
 
 Short-lived access tokens
 
-Refresh token rotation
-
-Zod validation (prevents bad input)
-
-Rate limiting (anti-spam)
+Input validation via Zod
 
 Role-based authorization
 
-🧱 Tech Stack
+Rate limiting on sensitive endpoints
 
-Backend: Node.js, Next.js API routes
+⚙️ Tech Stack
+
+Backend: Node.js, Next.js API Routes
 
 Database: Prisma ORM
 
-Auth: JWT (jose)
+Authentication: JWT (jose)
 
 Validation: Zod
 
@@ -230,30 +212,53 @@ Frontend: Next.js
 
 Deployment: Vercel
 
-📈 Scalability Notes
+📈 Scalability & Future Improvements
 
-This project is designed to scale:
+The system is intentionally designed to support future scaling:
 
-Modular architecture (easy to split into microservices)
+Modular structure allows easy migration to microservices
 
-Repository pattern for DB abstraction
+Repository layer enables database abstraction
 
-Can add:
+Can be extended with:
 
 Redis caching
 
-Message queues
+Message queues (Kafka/RabbitMQ)
 
 Load balancing
 
-Docker containerization
+Docker-based deployment
 
-📂 Project Structure (Simplified)
+Future enhancements could include:
+
+Email/OTP-based verification for admin roles
+
+
+Token rotation strategies
+
+Advanced monitoring and logging
+
 app/
- ├── modules/
- │    ├── auth/
- │    ├── todos/
- │    ├── users/
- ├── utils/
- ├── lib/
- ├── middleware.ts
+├── api/
+│   └── v1/                     # Versioned API layer
+│       ├── auth/              # Authentication routes (signin, signup, refresh)
+│       ├── todos/             # Todo CRUD routes
+│       ├── users/             # Admin-only user management routes
+│
+├── modules/                   # Business logic (feature-based modules)
+│   ├── auth/                  # Auth controller, service, repository
+│   ├── todos/                 # Todo logic (CRUD operations)
+│   ├── users/                 # User management (admin controls)
+│
+├── utils/                     # Shared utilities
+│   ├── error handling (AppError)
+│   ├── API response formatter
+│   ├── validation helpers
+│
+├── lib/                       # Core configurations & reusable services
+│   ├── prisma client
+│   ├── rate limiter
+│   ├── auth helpers (JWT, requireAuth)
+│
+├── middleware.ts              # Route protection & token validation
