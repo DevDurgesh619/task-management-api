@@ -33,7 +33,7 @@ Access Token (short-lived, 10 minutes) → Used for API access
 Refresh Token (long-lived, 7 days) → Used to regenerate access tokens
 
 Both tokens are securely stored in HTTP-only cookies, mitigating XSS risks. Additional cookie configurations (secure, same-site) are applied to reduce CSRF attack vectors.
-
+I implimented refresh route for seamless user interation with frontend , when access token expires i use fetchAPI function to send req to refresh end point to generate new refresh token , access token and revoke old one (rotation) so that if a req failed due to 401 then it fetchAPI wrapper send req to refresh get new access token and again try the main req of user trying to do. (it remove the need to re-login the app again)
 During token generation, essential user information such as:
 
 userId
@@ -139,9 +139,43 @@ Real-time error/success feedback from API responses
 
 The frontend acts as a simple client to validate backend behavior rather than a full production UI.
 
-📮 API Usage (Postman Guide)
+📬 API Documentation & Testing
 
-To test APIs using Postman:
+You can explore and test all APIs using the published Postman documentation:
+
+👉 https://documenter.getpostman.com/view/46306535/2sBXcHheV9
+
+This interactive documentation provides request/response examples for all endpoints.
+
+🚀 Import Collection
+
+To test APIs directly:
+
+Open Postman
+
+Click Import
+
+Select Import from Link
+
+Paste the documentation URL above or download the collection
+
+🔐 Test Credentials (to test admin end points)
+email: admin@gmail.com
+password: admin123
+
+🧪 Suggested Testing Flow
+
+Sign in to generate authentication cookies
+
+Access protected routes (Todos / Users)
+
+Perform CRUD operations
+
+Test token refresh flow
+
+⚠️ Note
+
+Ensure cookies are enabled in Postman to properly test authenticated endpoints.
 
 Step 1: Register or Login
 
